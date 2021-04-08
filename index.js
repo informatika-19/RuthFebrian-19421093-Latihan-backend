@@ -1,7 +1,19 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
- 
+ const mongoose = require('mongoose')
+
+ mongoose.connect('mongodb://localhost:27017/latihan', {
+    useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+}).then(() =>{
+    console.log('berhasil konek ke database')
+}).catch((e) => {
+    console.log(e)
+    console.log('gagal konek ke database')
+})
 app.use(bodyParser.json({
     extends: true, 
     limit: '20mb'
@@ -24,12 +36,12 @@ app.get('/daerah/:namadaerah/:id', (req, res) => {
     const idDaerah = reg.params.id
   res.send('Anda Di ' + namadaerah + ' ID Daerah = ' + idDaerah)
 })
-app.post ('/register',(req, res) =>{
-    console.log(req.body)
-    res.json(req.body)
-})
+//app.post ('/register',(req, res) =>{
+  //console.log (req.body)
+  //  res.json(req.body)
+//})
+app.use('/user',require('./routes/user'))
 
- 
-app.listen(4000,(req,res) => {
+app.listen(4000,() => {
     console.log('Server Started')
 })
