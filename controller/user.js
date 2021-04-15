@@ -2,6 +2,8 @@ const userModel = require('../model/user')
 const bcrypt=require('bcrypt')
 exports.register = (data) =>
 new Promise((resolve, reject) =>{
+
+    //ini untuk mencari satu data
     userModel.findOne({
         username: data.username
     }).then((user) =>{
@@ -13,6 +15,7 @@ new Promise((resolve, reject) =>{
         }else{
             bcrypt.hash(data.password, 10, (err, hash) => {
             data.password = hash
+            //untuk membuat insert,creat,atau membuat
                 userModel.create(data).then(() =>{
                     //console.log ('berhasil insert')
                     resolve({
@@ -34,4 +37,33 @@ new Promise((resolve, reject) =>{
     })
 
 
+})
+exports.login=(username,password)=>
+new Promise((resolve,reject)=>{
+    console.log(username)
+    userModel.findOne({
+
+        username: username
+    }).then((user) =>{
+        if (user){
+            if (bcrypt.compareSync(password,user.password)){
+                resolve({
+                    status : true,
+                    pesan :'berhasil login'
+                
+                })
+            }else{
+                reject({
+                    status: false,
+                    pesan :'password tidak sesuai'
+                })
+            }
+        }else{
+            reject({
+                status: false,
+                pesan:'username tidak terdaftar'
+            })
+        }
+
+})
 })
